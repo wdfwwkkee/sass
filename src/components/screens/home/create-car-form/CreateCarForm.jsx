@@ -16,7 +16,6 @@ const CreateCarForm = ({ setCars }) => {
 
     const createCar = (e) => {
         e.preventDefault();
-        console.log({ data })
         setCars(prev => [ { id: prev.length + 1, ...data }, ...prev ])
 
 
