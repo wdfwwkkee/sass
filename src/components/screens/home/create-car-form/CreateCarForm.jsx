@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import styles from './CreateCarForm.module.scss'
+import { useForm } from 'react-hook-form';
 
 const clearData = {
     price: '',
@@ -10,32 +11,32 @@ const clearData = {
 
 const CreateCarForm = ({ setCars }) => {
 
-    
+
     const [data, setData] = useState(clearData);
 
 
-    const createCar = (e) => {
-        e.preventDefault();
-        setCars(prev => [ { id: prev.length + 1, ...data }, ...prev ])
+    const { register, reset, handleSubmit, formState : {errors} } = useForm({
+        mode: "onChange"
+    });
 
 
-        setData(clearData);
+    const createCar = data => {
+        setCars(prev => [{ id: prev.length + 1, ...data }, ...prev])
+        console.log(data)
+
+        reset();
 
     }
 
     return (
-        <form className={styles.form} action="">
-            <input placeholder='Name' type="text" onChange={e =>
-                setData(prev => ({...prev, name: e.target.value}))
-            } value={data.name} />
-            <input placeholder='Price' type="text" onChange={e =>
-                setData(prev => ({...prev, price: e.target.value}))
-            } value={data.price} />
-            <input placeholder='Image' type="text" onChange={e =>
-                setData(prev => ({...prev, image: e.target.value}))
-            } value={data.image} />
-
-            <button className='btn' onClick={e => createCar(e)}>Create</button>
+        <form className={styles.form} action="" onSubmit={handleSubmit(createCar)}>
+            <input placeholder='Name' type="text" {...register('name', {required : 'Name is required'})} />
+            {errors?.name?.message && <p className='error' >Name is required</p> }
+            <input placeholder='Price' type="text" {...register('price', {required : 'Price is required'})} />
+            {errors?.price?.message && <p className='error' >price is required</p> }
+            <input placeholder='Image' type="text" {...register('image', {required : 'Image is required'})} />
+            {errors?.image?.message && <p className='error' >image is required</p> }
+            <button className='btn'>Create</button>
         </form>
     )
 }

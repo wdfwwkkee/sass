@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { CarService } from '../../../services/car.service';
 import Car from '../home/car-item/Car';
+import { withAuth } from '../../HOC/withAuth';
 
 const CarDetail = () => {
 
@@ -41,4 +42,4 @@ const CarDetail = () => {
     )
 }
 
-export default CarDetail
+export default withAuth(CarDetail)
