@@ -1,31 +1,30 @@
 import React, { useState } from 'react'
 import styles from './CreateCarForm.module.scss'
 import { useForm } from 'react-hook-form';
-
-const clearData = {
-    price: '',
-    name: '',
-    image: '',
-};
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { CarService } from '../../../../services/car.service';
 
 
-const CreateCarForm = ({ setCars }) => {
-
-
-    const [data, setData] = useState(clearData);
-
+const CreateCarForm = () => {
 
     const { register, reset, handleSubmit, formState : {errors} } = useForm({
         mode: "onChange"
     });
 
+    const queryClient = useQueryClient()
+
+
+    const { mutate } = useMutation({
+        mutationKey : ["create car"],
+        mutationFn : (data)=> CarService.create(data),
+        onSuccess : ()=> {
+            queryClient.invalidateQueries('cars')
+            reset();
+        } 
+    })
 
     const createCar = data => {
-        setCars(prev => [{ id: prev.length + 1, ...data }, ...prev])
-        console.log(data)
-
-        reset();
-
+        mutate({...data })
     }
 
     return (

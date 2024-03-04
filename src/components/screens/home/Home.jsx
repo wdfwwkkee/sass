@@ -4,41 +4,30 @@ import CreateCarForm from "./create-car-form/CreateCarForm";
 import { useContext, useEffect, useState } from "react";
 import { CarService } from "../../../services/car.service";
 import { AuthContext } from "../../../providers/AuthProviders";
+import { useQuery } from "@tanstack/react-query";
+import Header from "../../ui/Header";
 
 function Home()  {
 
-    const [cars, setCars] = useState([]);
+    const {data, isLoading, error} = useQuery({
+        queryKey : ["cars"],
+        queryFn : ()=> {return CarService.getAll()}
+    })
 
-    useEffect(()=> {
-        const fetchData = async () => {
-            const data = await CarService.getAll();
-            setCars(data)
-        }
 
-        fetchData();
-    }, []);
 
-    const {user, setUser} = useContext(AuthContext);
+    if (isLoading) return <p>Loading...</p>
 
     return (
         <div>
             <h1>Cars Catalog</h1>
 
-            {user ? (
-            <div>
-                <h2>Welcome {user.name}</h2>
-                <button onClick={()=> setUser(null)}>Logout</button>
-            </div>
-            
-            ) 
-            : <button onClick={()=> {setUser({name : "Max"})}}>Login</button>
-        
-        } 
+            <Header />
 
             <div>
-                <CreateCarForm setCars={setCars}/>
-                {cars.length ? 
-                    cars.map(cars => (
+                <CreateCarForm/>
+                {data.length ? 
+                    data.map(cars => (
                     <Car key={cars.id} car={cars} />
                 ))
                 : <p>no Cars</p>

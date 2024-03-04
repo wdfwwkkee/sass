@@ -24,12 +24,7 @@ const CarDetail = () => {
     if (!car) return (
         <div>
             <Link to='/'>Back</Link>
-            <p style={
-            {
-                textAlign : "center"
-            }}>
-                Not found
-            </p>
+            <notFound />
         </div>
     ) 
     if (!car.id) return <p>Loading...</p>
